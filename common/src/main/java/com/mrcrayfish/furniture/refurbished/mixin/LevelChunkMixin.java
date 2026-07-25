@@ -8,9 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.LevelChunk;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,16 +19,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LevelChunk.class)
 public class LevelChunkMixin
 {
-    @Shadow
-    @Final
-    Level level;
-
     @Definition(id = "removeThis", local = @Local(name = "removeThis", type = BlockEntity.class))
     @Expression("removeThis != null")
     @Inject(method = "removeBlockEntity", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
     private void refurbished_furniture$AfterRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local(name = "removeThis") BlockEntity entity)
     {
-        if(this.level != null && !this.level.isClientSide() && entity instanceof IElectricityNode node)
+        Level level = ((LevelChunk)(Object) this).getLevel();
+        if(level != null && !level.isClientSide() && entity instanceof IElectricityNode node)
         {
             node.onNodeDestroyed();
         }
