@@ -30,7 +30,7 @@ public class LevelChunkMixin
     @Inject(method = "removeBlockEntity", at = @At(value = "MIXINEXTRAS:EXPRESSION"))
     private void refurbished_furniture$AfterRemoveBlockEntity(BlockPos pos, CallbackInfo ci, @Local(name = "removeThis") BlockEntity entity)
     {
-        if(!this.level.isClientSide() && entity instanceof IElectricityNode node)
+        if(this.level != null && !this.level.isClientSide() && entity instanceof IElectricityNode node)
         {
             node.onNodeDestroyed();
         }
